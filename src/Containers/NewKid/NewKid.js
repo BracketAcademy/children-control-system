@@ -3,7 +3,7 @@ import { DatePicker } from "antd-jalali";
 import { useForm } from "antd/lib/form/Form";
 import Logo from "../../Components/Logo/Logo";
 import axios from "axios";
-import {  useState } from "react";
+import { useState } from "react";
 
 const NewKid = () => {
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const NewKid = () => {
     const birth_date = new Date(values.birth_date).toISOString().substring(0, 10)
     console.log(birth_date)
     axios
-      .post(URL + "/addkid" , {...values , birth_date})
+      .post(URL + "/addkid", { ...values, birth_date })
       .then((res) => {
         Modal.success({ title: "ثبت نام با موفقیت انجام شد." });
         setLoading(false);
@@ -29,14 +29,14 @@ const NewKid = () => {
   return (
     <div className="form">
       <Logo />
-      <h2>فرم ثبت نام غرفه کودک جوانه‌ها</h2>
-      <Form 
-      onFinish={(values)=>{
-        addNewKid(values)
-      }}
-      scrollToFirstError={true}
-      layout="vertical" 
-      form={form} style={{ width: "100%" }}>
+      <h2>فرم ثبت نام غرفه کودک</h2>
+      <Form
+        onFinish={(values) => {
+          addNewKid(values)
+        }}
+        scrollToFirstError={true}
+        layout="vertical"
+        form={form} style={{ width: "100%" }}>
         <Form.Item
           label="نام کودک"
           name="first_name"
