@@ -56,6 +56,9 @@ class DataTable extends Component {
       }, 5000);
     }
   }
+  getDataIndex = (record) => {
+    return this.state.data.findIndex((item) => item.id === record.id);
+  };
   fetchData = () => {
     this.setState({ loading: true });
     axios
@@ -92,11 +95,23 @@ class DataTable extends Component {
         });
       });
   };
-  entryHandler = (record, index) => {
+  entryHandler = (record) => {
+    const index = this.getDataIndex(record);
+    if (index === -1) return;
+
+    const kid = this.state.data[index];
+    const gender =
+      kid.gender && kid.gender !== "NO"
+        ? kid.gender
+        : record.gender && record.gender !== "NO"
+          ? record.gender
+          : kid.gender || "";
+    const number = kid.number || "";
+
     const payLoad = {
       id: record.id,
-      number: this.state.data[index].number,
-      gender: record.gender && record.gender !== 'NO' ? record.gender : this.state.data[index].gender,
+      number,
+      gender,
     };
 
     const postData = () => {
@@ -117,10 +132,10 @@ class DataTable extends Component {
     };
 
     if (
-      this.state.data[index].number.trim() === "000" ||
-      this.state.data[index].gender.trim() === "NO" ||
-      this.state.data[index].number.trim() === "" ||
-      this.state.data[index].gender.trim() === ""
+      number.trim() === "000" ||
+      gender.trim() === "NO" ||
+      number.trim() === "" ||
+      gender.trim() === ""
     ) {
       this.setState({
         error: {
@@ -132,7 +147,7 @@ class DataTable extends Component {
       let isUnique = true;
       for (let i = 0; i < this.state.data.length; i++) {
         const element = this.state.data[i];
-        if (element.number === this.state.data[index].number && i !== index) {
+        if (element.number === number && i !== index) {
           isUnique = false;
           break;
         }
@@ -152,20 +167,18 @@ class DataTable extends Component {
           },
         });
       }
-      console.log(
-        "from post ",
-        this.state.data[index].number,
-        this.state.data[index].gender
-      );
     }
   };
-  deliverHandler = (record, index) => {
+  deliverHandler = (record) => {
+    const index = this.getDataIndex(record);
     this.setState({ loading: true });
     axios
       .post(URL + this.props.deliverURL, { id: record.id })
       .then((res) => {
         const dataArray = this.state.data;
-        dataArray[index].status = "RE";
+        if (index !== -1) {
+          dataArray[index].status = "RE";
+        }
         this.setState({ data: dataArray, loading: false, error: null });
         this.fetchData();
       })
@@ -335,8 +348,9 @@ class DataTable extends Component {
         onFilter: (value, record) => record.gender.indexOf(value) === 0,
         sorter: (a, b) => a.gender.localeCompare(b.gender),
 
-        render: (text, record, index) => {
+        render: (text, record) => {
           const gender = record.gender;
+          const dataIndex = this.getDataIndex(record);
           const dataArray = this.state.data;
           if (gender === "MA") {
             return <Tag color="geekblue">پسر</Tag>;
@@ -350,9 +364,14 @@ class DataTable extends Component {
                 style={{
                   width: "100%",
                 }}
-                value={dataArray[index].gender === "NO" ? "" : dataArray[index].gender}
+                value={
+                  dataIndex !== -1 && dataArray[dataIndex].gender === "NO"
+                    ? ""
+                    : dataArray[dataIndex]?.gender
+                }
                 onChange={(value) => {
-                  dataArray[index].gender = value ? value.toString() : "";
+                  if (dataIndex === -1) return;
+                  dataArray[dataIndex].gender = value ? value.toString() : "";
                   this.setState({ data: dataArray });
                 }}
               >
@@ -371,22 +390,26 @@ class DataTable extends Component {
         ...this.getColumnSearchProps("number"),
         sorter: (a, b) =>
           +a.number.toEnglishDigit() - +b.number.toEnglishDigit(),
-        render: (text, record, index) => {
+        render: (text, record) => {
+          const dataIndex = this.getDataIndex(record);
           if (record.status === "NO") {
             return (
               <Input
                 onChange={(event) => {
+                  if (dataIndex === -1) return;
                   const dataArray = this.state.data;
-                  dataArray[index].number = event.target.value
+                  dataArray[dataIndex].number = event.target.value
                     ? event.target.value.toString().toEnglishDigit()
                     : "0";
                   this.setState({ data: dataArray });
-                  console.log(this.state.data[index].number);
                 }}
                 value={
-                  this.state.data[index].number === "000"
+                  dataIndex !== -1 &&
+                  this.state.data[dataIndex].number === "000"
                     ? ""
-                    : this.state.data[index].number
+                    : dataIndex !== -1
+                      ? this.state.data[dataIndex].number
+                      : text
                 }
               />
             );
@@ -596,7 +619,7 @@ class DataTable extends Component {
               return (
                 <Button
                   onClick={() => {
-                    this.entryHandler(record, index);
+                    this.entryHandler(record);
                   }}
                   block
                   type="primary"
@@ -608,7 +631,7 @@ class DataTable extends Component {
               return (
                 <Button
                   onClick={() => {
-                    this.deliverHandler(record, index);
+                    this.deliverHandler(record);
                   }}
                   block
                   type="primary"
@@ -642,12 +665,15 @@ class DataTable extends Component {
       {
         title: "بازگشت",
         align: "center",
-        render: (text, record, index) => {
+        render: (text, record) => {
           return (
             <Button
               disabled={record.status === "NO"}
               className="edit-button"
               onClick={() => {
+                const dataIndex = this.getDataIndex(record);
+                if (dataIndex === -1) return;
+
                 this.setState({ loading: true });
                 const dataArray = this.state.data;
                 let NewStatus = "";
@@ -676,13 +702,13 @@ class DataTable extends Component {
                   default:
                     break;
                 }
-                dataArray[index].status = NewStatus;
-                dataArray[index].gate_in = NewGateIN
+                dataArray[dataIndex].status = NewStatus;
+                dataArray[dataIndex].gate_in = NewGateIN
                   ? NewGateIN
-                  : dataArray[index].gate_in;
-                dataArray[index].gate_out = NewGateOut
+                  : dataArray[dataIndex].gate_in;
+                dataArray[dataIndex].gate_out = NewGateOut
                   ? NewGateOut
-                  : dataArray[index].gate_out;
+                  : dataArray[dataIndex].gate_out;
                 axios
                   .post(URL + "/undo", { id: record.id, status: NewStatus })
                   .then(() => {
