@@ -10,11 +10,11 @@ import {
   Button,
   Input,
   Modal,
-  PageHeader,
   Select,
   Space,
   Table,
   Tag,
+  Typography,
 } from "antd";
 import axios from "axios";
 import React, { Component } from "react";
@@ -287,7 +287,7 @@ class DataTable extends Component {
         .toEnglishDigit()
         .toLowerCase()
         .includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: (visible) => {
+    onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => this.searchInput.current?.select(), 100);
       }
@@ -736,8 +736,15 @@ class DataTable extends Component {
 
     return (
       <div className="DataTable">
-        <PageHeader
-          title={
+        <div
+          style={{
+            marginBottom: 16,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography.Title level={4} style={{ margin: 0 }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
                 style={{
@@ -752,15 +759,11 @@ class DataTable extends Component {
               </div>
               {this.props.title}
             </div>
-          }
-          extra={
-            <>
-              <Button onClick={this.fetchData} icon={<ReloadOutlined />}>
-                بروزرسانی{" "}
-              </Button>
-            </>
-          }
-        />
+          </Typography.Title>
+          <Button onClick={this.fetchData} icon={<ReloadOutlined />}>
+            بروزرسانی{" "}
+          </Button>
+        </div>
         <Table
           loading={this.state.loading || !this.state.fetched}
           columns={columns}
@@ -771,7 +774,7 @@ class DataTable extends Component {
         />
 
         <Modal
-          visible={this.state.modal ? true : false}
+          open={this.state.modal ? true : false}
           title={this.state.modal ? this.state.modal.title : ""}
           onOk={this.state.modal ? this.state.modal.onOk : null}
           onCancel={() => {

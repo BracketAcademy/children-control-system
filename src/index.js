@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from 'antd';
 import { JalaliLocaleListener } from 'antd-jalali'
-import fa_IR from 'antd/es/locale/fa_IR'
+import fa_IR from 'antd/locale/fa_IR'
 import { AuthProvider } from './providers/auth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

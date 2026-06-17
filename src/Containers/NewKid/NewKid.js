@@ -1,6 +1,5 @@
 import { Button, Form, Input, Modal, Select } from "antd";
 import { DatePicker } from "antd-jalali";
-import { useForm } from "antd/lib/form/Form";
 import Logo from "../../Components/Logo/Logo";
 import axios from "axios";
 import { useState } from "react";
@@ -11,7 +10,7 @@ const NewKid = () => {
 
   const addNewKid = (values) => {
     setLoading(true);
-    const birth_date = new Date(values.birth_date).toISOString().substring(0, 10)
+    const birth_date = values.birth_date.format("YYYY-MM-DD");
     console.log(birth_date)
     axios
       .post(URL + "/addkid", { ...values, birth_date })
@@ -25,7 +24,7 @@ const NewKid = () => {
       });
   };
 
-  const [form] = useForm();
+  const [form] = Form.useForm();
   return (
     <div className="form">
       <Logo />
@@ -83,7 +82,7 @@ const NewKid = () => {
             },
           ]}
         >
-          <Select placeholder="انتخاب کنید" dropdownClassName="form-select">
+          <Select placeholder="انتخاب کنید" popupClassName="form-select">
             <Select.Option value="FE"> دختر</Select.Option>
             <Select.Option value="MA">پسر</Select.Option>
           </Select>
@@ -146,7 +145,7 @@ const NewKid = () => {
             },
           ]}
         >
-          <Select placeholder="انتخاب کنید" dropdownClassName="form-select">
+          <Select placeholder="انتخاب کنید" popupClassName="form-select">
             <Select.Option value={true}> بله</Select.Option>
             <Select.Option value={false}>خیر</Select.Option>
           </Select>

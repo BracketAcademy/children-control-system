@@ -2,13 +2,12 @@ import "./App.css";
 import MenPanel from "./Containers/MenPanel/MenPanel";
 import {
   PlusCircleFilled,
-  UpOutlined,
   HomeFilled,
   LogoutOutlined
 } from "@ant-design/icons";
 
-import { Layout, Menu, Result, Button, BackTop } from "antd";
-import "antd/dist/antd.css";
+import { Layout, Menu, Result, Button } from "antd";
+import "antd/dist/reset.css";
 import React, { useState } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import WomenPanel from "./Containers/WomenPanel/WomenPanel";
@@ -135,7 +134,6 @@ function App() {
                       }
                     />
                   </Routes>
-                  <BackTop className="back-to-top"><UpOutlined /></BackTop>
                 </Content>
               </Layout>
             </Layout>
