@@ -8,6 +8,7 @@ import {
 import {
   Alert,
   Button,
+  Descriptions,
   Input,
   Modal,
   Select,
@@ -44,6 +45,7 @@ class DataTable extends Component {
     loading: false,
     error: null,
     modal: null,
+    selectedKid: null,
   };
   componentDidMount() {
     this.fetchData();
@@ -204,6 +206,17 @@ class DataTable extends Component {
     this.setState({ searchText: "" });
   };
 
+  renderPhone = (text) => {
+    if (!text || text === "ندارد") {
+      return <span>{text || "ندارد"}</span>;
+    }
+    return <a href={"tel:" + text}>{text.toPersianDigit()}</a>;
+  };
+
+  openKidModal = (record) => {
+    this.setState({ selectedKid: record });
+  };
+
   getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -314,7 +327,8 @@ class DataTable extends Component {
         dataIndex: "first_name",
         key: "first_name",
         align: "right",
-        width: "10%",
+        width: 130,
+        ellipsis: true,
         ...this.getColumnSearchProps("first_name"),
       },
       {
@@ -322,15 +336,16 @@ class DataTable extends Component {
         dataIndex: "last_name",
         key: "last_name",
         align: "right",
-        width: "10%",
+        width: 140,
+        ellipsis: true,
         ...this.getColumnSearchProps("last_name"),
       },
       {
         title: "جنسیت",
         dataIndex: "gender",
         key: "gender",
-        align: "right",
-        width: "6%",
+        align: "center",
+        width: 110,
         filters: [
           {
             text: "دختر",
@@ -385,8 +400,8 @@ class DataTable extends Component {
       {
         title: "شماره",
         dataIndex: "number",
-        align: "right",
-        width: "6%",
+        align: "center",
+        width: 100,
         ...this.getColumnSearchProps("number"),
         sorter: (a, b) =>
           +a.number.toEnglishDigit() - +b.number.toEnglishDigit(),
@@ -395,6 +410,7 @@ class DataTable extends Component {
           if (record.status === "NO") {
             return (
               <Input
+                className="number-input"
                 onChange={(event) => {
                   if (dataIndex === -1) return;
                   const dataArray = this.state.data;
@@ -423,7 +439,7 @@ class DataTable extends Component {
         dataIndex: "age",
         key: "age",
         align: "center",
-        width: "5%",
+        width: 70,
         ...this.getColumnSearchProps("age"),
         sorter: (a, b) =>
           +a.age - +b.age,
@@ -440,7 +456,7 @@ class DataTable extends Component {
         dataIndex: "wc",
         key: "wc",
         align: "center",
-        width: "5%",
+        width: 70,
         filters: [
           {
             text: "بله",
@@ -458,70 +474,29 @@ class DataTable extends Component {
       },
 
       {
-        title: "نسبت تحویل دهنده",
-        dataIndex: "caretaker",
-        key: "caretaker",
-        align: "center",
-        width: "6%",
-
-      },
-      {
         title: "نام تحویل دهنده",
         dataIndex: "caretaker_name",
         key: "caretaker_name",
         align: "right",
-        width: "8%",
-
+        width: 170,
+        ellipsis: true,
         ...this.getColumnSearchProps("caretaker_name"),
       },
       {
         title: "شماره تماس",
         dataIndex: "caretaker_phone_number",
         key: "caretaker_phone_number",
-        align: "right",
-        width: "6%",
-
-        render: (text, record) =>
-          text === "ندارد" ? (
-            <span>{text}</span>
-          ) : (
-            <a href={"tel:" + text}>{text.toPersianDigit()}</a>
-          ),
-      },
-      {
-        title: "شماره تماس اضطراری",
-        dataIndex: "emergancy_calls",
-        key: "emergancy_calls",
-        align: "right",
-        width: "8%",
-
-        render: (text, record) =>
-          text === "ندارد" ? (
-            <span>{text}</span>
-          ) : (
-            <a href={"tel:" + text}>{text.toPersianDigit()}</a>
-          ),
-      },
-      {
-        title: "تلفن منزل",
-        dataIndex: "caretaker_home_number",
-        key: "caretaker_home_number",
-        align: "right",
-        width: "6%",
-
-        render: (text, record) =>
-          text === "ندارد" ? (
-            <span>{text}</span>
-          ) : (
-            <a href={"tel:" + text}>{text.toPersianDigit()}</a>
-          ),
+        align: "center",
+        width: 150,
+        className: "phone-cell",
+        render: (text) => this.renderPhone(text),
       },
       {
         title: "ورود",
         dataIndex: "gate_in",
         key: "gate_in",
-        align: "right",
-        width: "6%",
+        align: "center",
+        width: 110,
         filters: [
           {
             text: "پدران",
@@ -554,8 +529,8 @@ class DataTable extends Component {
         title: "خروج",
         dataIndex: "gate_out",
         key: "gate_out",
-        align: "right",
-        width: "6%",
+        align: "center",
+        width: 110,
         filters: [
           {
             text: "پدران",
@@ -588,8 +563,9 @@ class DataTable extends Component {
         title: "عملیات",
         dataIndex: "status",
         key: "status",
-        align: "right",
-
+        align: "center",
+        width: 160,
+        fixed: "left",
         filters: [
           {
             text: "ورود",
@@ -618,11 +594,13 @@ class DataTable extends Component {
             case "NO":
               return (
                 <Button
+                  className="action-button"
                   onClick={() => {
                     this.entryHandler(record);
                   }}
                   block
                   type="primary"
+                  size="middle"
                 >
                   ورود
                 </Button>
@@ -630,11 +608,13 @@ class DataTable extends Component {
             case "IN":
               return (
                 <Button
+                  className="action-button"
                   onClick={() => {
                     this.deliverHandler(record);
                   }}
                   block
                   type="primary"
+                  size="middle"
                 >
                   درخواست تحویل
                 </Button>
@@ -665,6 +645,8 @@ class DataTable extends Component {
       {
         title: "بازگشت",
         align: "center",
+        width: 90,
+        fixed: "left",
         render: (text, record) => {
           return (
             <Button
@@ -726,6 +708,7 @@ class DataTable extends Component {
               }}
               block
               type="link"
+              size="middle"
             >
               بازگشت
             </Button>
@@ -765,12 +748,28 @@ class DataTable extends Component {
           </Button>
         </div>
         <Table
+          className="kids-table"
           loading={this.state.loading || !this.state.fetched}
           columns={columns}
           dataSource={this.state.data}
-          pagination={{ showTitle: false }}
+          pagination={{ showTitle: false, pageSize: 10 }}
           rowKey={(record) => record.id}
-          scroll={{ x: true }} // enables horizontal scrolling when table width exceeds window width
+          scroll={{ x: 1520 }}
+          size="middle"
+          tableLayout="fixed"
+          onRow={(record) => ({
+            onClick: (e) => {
+              if (
+                e.target.closest(
+                  "button, a, input, textarea, .ant-select, .ant-select-selector"
+                )
+              ) {
+                return;
+              }
+              this.openKidModal(record);
+            },
+            style: { cursor: "pointer" },
+          })}
         />
 
         <Modal
@@ -784,6 +783,48 @@ class DataTable extends Component {
           okText="بله"
         >
           <p>{this.state.modal ? this.state.modal.message : ""}</p>
+        </Modal>
+        <Modal
+          open={!!this.state.selectedKid}
+          title={
+            this.state.selectedKid
+              ? `${this.state.selectedKid.first_name} ${this.state.selectedKid.last_name}`
+              : ""
+          }
+          onCancel={() => {
+            this.setState({ selectedKid: null });
+          }}
+          footer={[
+            <Button
+              key="close"
+              type="primary"
+              onClick={() => {
+                this.setState({ selectedKid: null });
+              }}
+            >
+              بستن
+            </Button>,
+          ]}
+        >
+          {this.state.selectedKid ? (
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="نسبت تحویل دهنده">
+                {this.state.selectedKid.caretaker || "ندارد"}
+              </Descriptions.Item>
+              <Descriptions.Item label="نام تحویل دهنده">
+                {this.state.selectedKid.caretaker_name || "ندارد"}
+              </Descriptions.Item>
+              <Descriptions.Item label="شماره تماس">
+                {this.renderPhone(this.state.selectedKid.caretaker_phone_number)}
+              </Descriptions.Item>
+              <Descriptions.Item label="شماره تماس اضطراری">
+                {this.renderPhone(this.state.selectedKid.emergancy_calls)}
+              </Descriptions.Item>
+              <Descriptions.Item label="تلفن منزل">
+                {this.renderPhone(this.state.selectedKid.caretaker_home_number)}
+              </Descriptions.Item>
+            </Descriptions>
+          ) : null}
         </Modal>
         {this.state.error ? (
           <div className="error-container">

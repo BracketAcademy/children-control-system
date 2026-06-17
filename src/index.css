@@ -1,10 +1,34 @@
 @import url(./IRANSans/WebFonts/css/fontiran.css);
+
+:root {
+  --app-font-family: IRANSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
 * {
   direction: rtl;
-  font-family: IRANSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--app-font-family);
 }
+
+body,
+#root,
+.ant-app {
+  font-family: var(--app-font-family);
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  font-family: inherit;
+}
+
+[class^="ant-"],
+[class*=" ant-"] {
+  font-family: var(--app-font-family);
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;

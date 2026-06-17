@@ -10,11 +10,22 @@ import { JalaliLocaleListener } from 'antd-jalali'
 import fa_IR from 'antd/locale/fa_IR'
 import { AuthProvider } from './providers/auth';
 
+const APP_FONT_FAMILY =
+  "IRANSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif";
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <ConfigProvider direction="rtl" locale={fa_IR}>
+      <ConfigProvider
+        direction="rtl"
+        locale={fa_IR}
+        theme={{
+          token: {
+            fontFamily: APP_FONT_FAMILY,
+          },
+        }}
+      >
         <JalaliLocaleListener />
         <AuthProvider>
           <App />
