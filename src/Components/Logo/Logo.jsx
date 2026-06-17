@@ -8,7 +8,8 @@ const Logo = ({ white }) => {
       style={{
         filter: !white ? "none" : "invert(1)",
         margin: "auto",
-        maxWidth: "15em",
+        marginTop: "1em",
+        maxWidth: "10em",
       }}
     />
   );
