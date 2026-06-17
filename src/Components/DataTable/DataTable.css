@@ -58,8 +58,9 @@
 .error-container .ant-alert {
     width: 50rem;
 }
-.ant-pagination-item-link {
-    transform: scale(-1);
+.DataTable .ant-pagination-prev .ant-pagination-item-link,
+.DataTable .ant-pagination-next .ant-pagination-item-link {
+    transform: none;
 }
 .DataTable .ant-table-filter-trigger {
     margin-left: 0;
