@@ -21,11 +21,12 @@ export function useKidsTable({ entryURL, deliverURL }) {
     setLoading(true);
     kidsApi
       .getKids()
-      .then((resData) => {
+      .then((result) => {
         setLoading(false);
+        if (result.notModified) return;
         setData((prev) => {
-          if (JSON.stringify(prev) !== JSON.stringify(resData)) {
-            return resData;
+          if (JSON.stringify(prev) !== JSON.stringify(result.data)) {
+            return result.data;
           }
           return prev;
         });
