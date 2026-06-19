@@ -1,24 +1,22 @@
 import { Button, Form, Input, Modal, Select } from "antd";
 import { DatePicker } from "antd-jalali";
 import Logo from "../../Components/Logo/Logo";
-import axios from "axios";
 import { useState } from "react";
+import { addKid } from "../../api/kids";
 
 const NewKid = () => {
   const [loading, setLoading] = useState(false);
-  const URL = "https://api.javaaneha.ir/api2";
 
   const addNewKid = (values) => {
     setLoading(true);
     const birth_date = values.birth_date.format("YYYY-MM-DD");
-    console.log(birth_date)
-    axios
-      .post(URL + "/addkid", { ...values, birth_date })
-      .then((res) => {
+
+    addKid({ ...values, birth_date })
+      .then(() => {
         Modal.success({ title: "ثبت نام با موفقیت انجام شد." });
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         Modal.error({ title: "ثبت نام با مشکل مواجه شد، مجددا اقدام کنید." });
         setLoading(false);
       });

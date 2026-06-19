@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Alert, Card } from 'antd';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../providers/auth';
+import { login as loginApi } from '../../api/auth';
 
 const { Title } = Typography;
 
@@ -17,9 +17,9 @@ const Login = () => {
     setError(null);
     try {
       const { username, password } = values;
-      const response = await axios.post('https://api.javaaneha.ir/api2/token', { username, password });
-      if (response.data.token) {
-        login(response.data.token);
+      const response = await loginApi(username, password);
+      if (response.token) {
+        login(response.token);
         navigate('/');
       } else {
         setError('توکن دریافت نشد.');
